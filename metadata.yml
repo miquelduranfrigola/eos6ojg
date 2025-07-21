@@ -3,7 +3,7 @@ Slug: antibioticdb-similarity-matches
 Status: In progress
 Title: AntibioticDB similarity matches matches
 Description: Check whether compounds match with known antibiotics available from GARDP's
-  AntibioticDB database. The tool simply performs Morgan fingerprint (radius 2, 1024 bits) with the Tanimoto similarity.
+  AntibioticDB database. The tool simply performs Morgan fingerprint (radius 2, 1024 bits) with the Tanimoto similarity at different similarity cutoffs.
 Deployment:
 - Local
 Source: Local
