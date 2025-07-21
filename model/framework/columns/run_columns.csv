@@ -1,1 +1,5 @@
 name,type,direction,description
+num_sim_0_5,integer,high,Number of compounds in AntibioticDB with a Tanimoto similarity equal or greater than 0.5
+num_sim_0_7,integer,high,Number of compounds in AntibioticDB with a Tanimoto similarity equal or greater than 0.7
+num_sim_0_9,integer,high,Number of compounds in AntibioticDB with a Tanimoto similarity equal or greater than 0.9
+num_sim_1_0,integer,high,Number of compounds in AntibioticDB with a Tanimoto similarity equal or greater than 1.0

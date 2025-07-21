@@ -1,42 +1,30 @@
 Identifier: eos6ojg
-Slug: antibioticdb-match
+Slug: antibioticdb-similarity-matches
 Status: In progress
-Title: AntibioticDB matches
+Title: AntibioticDB similarity matches matches
 Description: Check whether compounds match with known antibiotics available from GARDP's
-  AntibioticDB database. The tool also contains substructure matches to main antibiotics
-  classes.
+  AntibioticDB database. The tool simply performs Morgan fingerprint (radius 2, 1024 bits) with the Tanimoto similarity.
 Deployment:
 - Local
-- Online
-Source: Local, Online
-Source Type: Internal, Replicated, External
-Task: Annotation, Representation, Sampling
-Subtask: Property calculation or prediction, Activity prediction, Featurization, Projection,
-  Similarity search, Generation
+Source: Local
+Source Type: Internal
+Task: Annotation
+Subtask: Activity prediction
 Input:
 - Compound
 Input Dimension: 1
 Output:
 - Value
-- Score
-- Compound
-- Probability
-- Experimental value
-- '...'
-Output Dimension: 1
-Output Consistency: Fixed, Variable
-Interpretation: 'The output of this template model should be interpreted like this.
-
-  '
+Output Dimension: 4
+Output Consistency: Fixed
+Interpretation: 'Number of compounds in AntiboticDB similar to the input compound.'
 Tag:
 - Antimicrobial activity
 Biomedical Area:
-- Biomedical Area 1
-- Biomedical Area 2
+- Antimicrobial resistance
 Target Organism:
-- Target Organism 1
-- Target Organism 2
-Publication Type: Peer reviewed, Preprint, Other
+- Any
+Publication Type: Peer reviewed
 Publication Year: 2025
 Publication: https://pubmed.ncbi.nlm.nih.gov/29897476/
 Source Code: https://antibioticdb.com/
