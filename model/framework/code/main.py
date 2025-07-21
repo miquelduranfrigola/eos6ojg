@@ -1,39 +1,62 @@
-# imports
 import os
-import csv
 import sys
-from rdkit import Chem
-from rdkit.Chem.Descriptors import MolWt
+import csv
+import numpy as np
+from FPSim2 import FPSim2Engine
+from tqdm import tqdm
+import pandas as pd
+import multiprocessing
 
-# parse arguments
+NUM_CPU = max(1, int(multiprocessing.cpu_count() / 2))
+
+root = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(root)
+from process import preprocess
+
+checkpoints_dir = os.path.abspath(os.path.join(root, "..", "..", "checkpoints"))
+
 input_file = sys.argv[1]
 output_file = sys.argv[2]
 
-# current file directory
-root = os.path.dirname(os.path.abspath(__file__))
-
-# my model
-def my_model(smiles_list):
-    return [MolWt(Chem.MolFromSmiles(smi)) for smi in smiles_list]
-
-
-# read SMILES from .csv file, assuming one column with header
+smiles_list = []
 with open(input_file, "r") as f:
     reader = csv.reader(f)
-    next(reader)  # skip header
-    smiles_list = [r[0] for r in reader]
+    header = next(reader)
+    for r in reader:
+        smiles = preprocess(r[0])
+        if smiles:
+            smiles_list += [smiles]
 
-# run model
-outputs = my_model(smiles_list)
+print("Processed SMILES in input:", len(smiles_list))
 
-#check input and output have the same lenght
-input_len = len(smiles_list)
-output_len = len(outputs)
-assert input_len == output_len
+print("Loading FPSim2 database...")
+fp_database = os.path.join(checkpoints_dir, "fpsim2_database.h5")
+fpe = FPSim2Engine(fp_database, in_memory_fps=True)
 
-# write output in a .csv file
-with open(output_file, "w") as f:
-    writer = csv.writer(f)
-    writer.writerow(["value"])  # header
-    for o in outputs:
-        writer.writerow([o])
+print("Counting similarities...")
+SIM_THRESHOLDS = [0.5, 0.7, 0.9, 1.0]
+C = np.zeros((len(smiles_list), len(SIM_THRESHOLDS)), dtype=int)
+for j, smiles in tqdm(enumerate(smiles_list)):
+    results = fpe.similarity(
+        smiles,
+        metric="tanimoto",
+        threshold=min(SIM_THRESHOLDS),
+        n_workers=NUM_CPU
+    )
+    counts = [0]*len(SIM_THRESHOLDS)
+    for i, sim_threshold in enumerate(SIM_THRESHOLDS):
+        c = 0
+        for r in results:
+            if r[1] >= sim_threshold:
+                c += 1
+        counts[i] = c
+    C[j, :] = counts
+
+
+cols = [f"num_sim_{thresh}".replace(".", "_") for thresh in SIM_THRESHOLDS]
+
+df = pd.DataFrame(C, columns=cols)
+
+df.to_csv(output_file, index=False)
+
+print(df)
