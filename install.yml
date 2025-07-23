@@ -4,3 +4,5 @@ commands:
     - ["pip", "fpsim2", "0.7.3"]
     - ["pip", "standardiser", "0.1.9"]
     - ["pip", "datamol", "0.12.5"]
+    - ["pip", "tqdm", "4.67.1"]
+    - ["pip", "scikit-learn", "1.7.1"]

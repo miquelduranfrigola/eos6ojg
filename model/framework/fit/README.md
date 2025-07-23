@@ -1,1 +1,2 @@
-To run these scripts, datamol is necessary.
+- To run the full pipeline, both the downloaded file from AntibioticDB and the ChEMBL chemreps v35 file are necessary.
+- To run these scripts, datamol is necessary.

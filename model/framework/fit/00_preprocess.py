@@ -34,3 +34,4 @@ with open(os.path.join(root, "..", "..", "checkpoints", "ADB_all_found_smiles.cs
     writer.writerow(["smiles"])
     for smiles in all_found_smiles:
         writer.writerow([smiles])
+        

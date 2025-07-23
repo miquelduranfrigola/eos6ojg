@@ -5,11 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 import csv
 from standardiser import standardise
-from rdkit.Chem import Descriptors
-import sys
-import shutil
 from FPSim2.io import create_db_file
-from rdkit.Chem.Scaffolds import MurckoScaffold
 
 root = os.path.join(os.path.dirname(__file__))
 
@@ -115,36 +111,3 @@ with open(os.path.join(root, "..", "..", "checkpoints", "fpsim2_database_smiles.
     writer.writerow(["smiles", "index"])
     for smiles, i in mols:
         writer.writerow([smiles, i])
-
-print("Getting Murcko scaffolds")
-
-scaffolds = []
-for smiles in tqdm(smiles_list):
-    mol = Chem.MolFromSmiles(smiles)
-    scaffold = MurckoScaffold.GetScaffoldForMol(mol)
-    scaffolds.append(Chem.MolToSmiles(scaffold))
-
-print("Converting Murcko scaffolds to InChIKeys and SMILES")
-
-scaffolds = sorted(set(scaffolds))
-scaffolds_inchikeys = []
-scaffolds_smiles = []
-for scaffold in tqdm(scaffolds):
-    mol = Chem.MolFromSmiles(scaffold)
-    if mol is None:
-        continue
-    inchikey = Chem.inchi.MolToInchiKey(mol)
-    if scaffold is None or scaffold == "":
-        continue
-    if inchikey is None or inchikey == "":
-        continue
-    scaffolds_inchikeys.append(inchikey)
-    scaffolds_smiles.append(scaffold)
-
-data = {"inchikey": scaffolds_inchikeys, "smiles": scaffolds_smiles}
-
-df = pd.DataFrame(data)
-df = df.sort_values(by="inchikey").reset_index(drop=True)
-df.to_csv(os.path.join(root, "..", "..", "checkpoints", "fpsim2_database_scaffolds_unique.csv"), index=False)
-
-print("Done!")

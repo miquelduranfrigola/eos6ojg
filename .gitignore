@@ -1,3 +1,8 @@
+model/checkpoints/ADB_all_found_smiles.csv
+model/checkpoints/chembl_*
+model/checkpoints/adb_*_scaffolds.tsv
+model/checkpoints/ADB*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
